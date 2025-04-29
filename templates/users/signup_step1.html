@@ -1,0 +1,150 @@
+{% extends 'users/base.html' %}
+
+{% block title %}Sign Up - Step 1 - OTP Authentication System{% endblock %}
+
+{% block content %}
+<div class="flex flex-col items-center justify-center py-8">
+    <div class="w-full max-w-2xl bg-white rounded-lg shadow-md overflow-hidden">
+        <div class="px-6 py-8">
+            <h1 class="text-2xl font-bold text-center text-gray-800 mb-2">Sign Up - Step 1</h1>
+            <p class="text-center text-gray-600 mb-8">Basic Information</p>
+            
+            <form method="post" class="space-y-6">
+                {% csrf_token %}
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label for="id_first_name" class="block text-sm font-medium text-gray-700 mb-1">First Name</label>
+                        {{ form.first_name }}
+                        {% if form.first_name.errors %}
+                        <p class="form-error">{{ form.first_name.errors.0 }}</p>
+                        {% endif %}
+                    </div>
+                    
+                    <div>
+                        <label for="id_last_name" class="block text-sm font-medium text-gray-700 mb-1">Last Name</label>
+                        {{ form.last_name }}
+                        {% if form.last_name.errors %}
+                        <p class="form-error">{{ form.last_name.errors.0 }}</p>
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <div>
+                    <label for="id_age" class="block text-sm font-medium text-gray-700 mb-1">Age (18+)</label>
+                    {{ form.age }}
+                    {% if form.age.errors %}
+                    <p class="form-error">{{ form.age.errors.0 }}</p>
+                    {% endif %}
+                </div>
+                
+                <div>
+                    <label for="id_profession" class="block text-sm font-medium text-gray-700 mb-1">Profession</label>
+                    {{ form.profession }}
+                    {% if form.profession.errors %}
+                    <p class="form-error">{{ form.profession.errors.0 }}</p>
+                    {% endif %}
+                </div>
+                
+                <div id="profession_detail_container" style="display: none;">
+                    <label for="id_profession_detail" id="profession_detail_label" class="block text-sm font-medium text-gray-700 mb-1">Details</label>
+                    {{ form.profession_detail }}
+                    {% if form.profession_detail.errors %}
+                    <p class="form-error">{{ form.profession_detail.errors.0 }}</p>
+                    {% endif %}
+                </div>
+                
+                <div>
+                    <label for="id_bio" class="block text-sm font-medium text-gray-700 mb-1">Bio (50-150 words)</label>
+                    {{ form.bio }}
+                    {% if form.bio.errors %}
+                    <p class="form-error">{{ form.bio.errors.0 }}</p>
+                    {% endif %}
+                    <p id="word_count" class="text-xs text-gray-500 mt-1">0 words</p>
+                </div>
+                
+                <div>
+                    <label for="id_hobbies" class="block text-sm font-medium text-gray-700 mb-1">Hobbies</label>
+                    {{ form.hobbies }}
+                    {% if form.hobbies.errors %}
+                    <p class="form-error">{{ form.hobbies.errors.0 }}</p>
+                    {% endif %}
+                </div>
+                
+                <div class="flex justify-between">
+                    <a href="{% url 'index' %}" class="py-2 px-4 bg-white border border-gray-300 hover:bg-gray-50 text-gray-700 font-medium rounded-md text-center transition duration-200">
+                        Cancel
+                    </a>
+                    <button type="submit" class="py-2 px-4 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-md text-center transition duration-200">
+                        Next
+                    </button>
+                </div>
+            </form>
+        </div>
+        
+        <div class="px-6 py-4 bg-gray-50 border-t border-gray-200">
+            <p class="text-center text-gray-500 text-sm">
+                Already have an account? <a href="{% url 'login' %}" class="text-blue-600 hover:underline">Login</a>
+            </p>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    // Handle profession selection
+    const professionSelect = document.getElementById('id_profession');
+    const professionDetailContainer = document.getElementById('profession_detail_container');
+    const professionDetailLabel = document.getElementById('profession_detail_label');
+    
+    professionSelect.addEventListener('change', function() {
+        const profession = this.value;
+        if (profession) {
+            professionDetailContainer.style.display = 'block';
+            
+            // Set label based on profession
+            if (profession === 'business') {
+                professionDetailLabel.textContent = 'Business Name';
+            } else if (profession === 'employee') {
+                professionDetailLabel.textContent = 'Company Name';
+            } else if (profession === 'freelancer') {
+                professionDetailLabel.textContent = 'Services Provided';
+            } else if (profession === 'student') {
+                professionDetailLabel.textContent = 'School/College Name';
+            }
+        } else {
+            professionDetailContainer.style.display = 'none';
+        }
+    });
+    
+    // Initialize profession detail if value exists
+    if (professionSelect.value) {
+        professionSelect.dispatchEvent(new Event('change'));
+    }
+    
+    // Word counter for bio
+    const bioTextarea = document.getElementById('id_bio');
+    const wordCount = document.getElementById('word_count');
+    
+    bioTextarea.addEventListener('input', function() {
+        const text = this.value.trim();
+        const words = text ? text.split(/\s+/).filter(Boolean).length : 0;
+        wordCount.textContent = words + ' words';
+        
+        // Highlight if outside 50-150 range
+        if (words < 50 || words > 150) {
+            wordCount.classList.add('text-red-500');
+            wordCount.classList.remove('text-gray-500');
+        } else {
+            wordCount.classList.add('text-gray-500');
+            wordCount.classList.remove('text-red-500');
+        }
+    });
+    
+    // Initialize word count if value exists
+    if (bioTextarea.value) {
+        bioTextarea.dispatchEvent(new Event('input'));
+    }
+</script>
+{% endblock %}

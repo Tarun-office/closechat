@@ -1,0 +1,68 @@
+{% extends 'users/base.html' %}
+
+{% block title %}Welcome - OTP Authentication System{% endblock %}
+
+{% block content %}
+<div class="flex flex-col items-center justify-center py-8">
+    <div class="w-full max-w-2xl bg-white rounded-lg shadow-md overflow-hidden">
+        <div class="px-6 py-8">
+            <h1 class="text-3xl font-bold text-center text-gray-800 mb-2">Welcome, {{ user.first_name }}!</h1>
+            <p class="text-center text-gray-600 mb-8">You have successfully logged in</p>
+            
+            <div class="space-y-6">
+                <div class="bg-gray-50 p-4 rounded-lg">
+                    <h3 class="font-medium text-lg mb-2">Your Profile</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <p class="text-sm text-gray-500">Name</p>
+                            <p>{{ user.first_name }} {{ user.last_name }}</p>
+                        </div>
+                        <div>
+                            <p class="text-sm text-gray-500">Email</p>
+                            <p>{{ user.email }}</p>
+                        </div>
+                        <div>
+                            <p class="text-sm text-gray-500">Age</p>
+                            <p>{{ user.age }}</p>
+                        </div>
+                        <div>
+                            <p class="text-sm text-gray-500">Profession</p>
+                            <p class="capitalize">{{ user.get_profession_display }}</p>
+                        </div>
+                        <div>
+                            <p class="text-sm text-gray-500">
+                                {% if user.profession == 'business' %}
+                                    Business Name
+                                {% elif user.profession == 'employee' %}
+                                    Company Name
+                                {% elif user.profession == 'freelancer' %}
+                                    Services Provided
+                                {% elif user.profession == 'student' %}
+                                    School/College Name
+                                {% endif %}
+                            </p>
+                            <p>{{ user.profession_detail }}</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="bg-gray-50 p-4 rounded-lg">
+                    <h3 class="font-medium text-lg mb-2">Bio</h3>
+                    <p>{{ user.bio }}</p>
+                </div>
+                
+                <div class="bg-gray-50 p-4 rounded-lg">
+                    <h3 class="font-medium text-lg mb-2">Hobbies</h3>
+                    <p>{{ user.hobbies }}</p>
+                </div>
+                
+                <div class="flex justify-center">
+                    <a href="{% url 'logout' %}" class="py-2 px-4 bg-white border border-gray-300 hover:bg-gray-50 text-gray-700 font-medium rounded-md text-center transition duration-200">
+                        Logout
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
